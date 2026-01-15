@@ -16,28 +16,29 @@ app.use(
 );
 app.use(express.json());
 
-/* ✅ HEALTH */
-app.get("/health", (_req, res) => {
+/* -------------------- HEALTH CHECK -------------------- */
+app.get("/api/health", (_req, res) => {
   res.status(200).json({
     status: "ok",
     message: "Backend is reachable 🚀",
   });
 });
 
-/* ✅ AUTH */
-app.post("/auth/register", authCtrl.register);
-app.post("/auth/login", authCtrl.login);
+/* -------------------- AUTH ROUTES -------------------- */
+app.post("/api/auth/register", authCtrl.register);
+app.post("/api/auth/login", authCtrl.login);
 
-/* ✅ INTERNSHIPS */
-app.post("/internships", auth, isAdmin, internshipCtrl.createInternship);
-app.get("/internships", auth, internshipCtrl.listInternships);
+/* -------------------- INTERNSHIP ROUTES -------------------- */
+app.post("/api/internships", auth, isAdmin, internshipCtrl.createInternship);
+app.get("/api/internships", auth, internshipCtrl.listInternships);
 
-/* ✅ APPLICATIONS */
-app.post("/applications", auth, isStudent, appCtrl.applyInternship);
-app.get("/applications/me", auth, isStudent, appCtrl.myApplications);
+/* -------------------- STUDENT ROUTES -------------------- */
+app.post("/api/applications", auth, isStudent, appCtrl.applyInternship);
+app.get("/api/applications/me", auth, isStudent, appCtrl.myApplications);
 
-/* ✅ ADMIN */
-app.get("/applications", auth, isAdmin, appCtrl.getAllApplications);
-app.patch("/applications/:id", auth, isAdmin, appCtrl.updateStatus);
+/* -------------------- ADMIN ROUTES -------------------- */
+app.get("/api/applications", auth, isAdmin, appCtrl.getAllApplications);
+app.patch("/api/applications/:id", auth, isAdmin, appCtrl.updateStatus);
+
 
 export default app;
