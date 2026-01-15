@@ -1,10 +1,8 @@
 import express from "express";
 import cors from "cors";
 
-// Middlewares
 import { auth, isAdmin, isStudent } from "./auth/auth.middleware";
 
-// Controllers
 import * as authCtrl from "./controllers/auth.controller";
 import * as internshipCtrl from "./controllers/internship.controller";
 import * as appCtrl from "./controllers/application.controller";
@@ -22,59 +20,60 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(express.json());
 
-/* -------------------- HEALTH CHECK -------------------- */
-app.get("/health", (_req, res) => {
+/* -------------------- HEALTH -------------------- */
+app.get("/api/health", (_req, res) => {
   res.status(200).json({
     status: "ok",
     message: "Backend is reachable 🚀",
   });
 });
 
-/* -------------------- AUTH ROUTES -------------------- */
-app.post("/auth/register", authCtrl.register);
-app.post("/auth/login", authCtrl.login);
+/* -------------------- AUTH -------------------- */
+app.post("/api/auth/register", authCtrl.register);
+app.post("/api/auth/login", authCtrl.login);
 
-/* -------------------- INTERNSHIP ROUTES -------------------- */
+/* -------------------- INTERNSHIPS -------------------- */
 app.post(
-  "/internships",
+  "/api/internships",
   auth,
   isAdmin,
   internshipCtrl.createInternship
 );
 
 app.get(
-  "/internships",
+  "/api/internships",
   auth,
   internshipCtrl.listInternships
 );
 
-/* -------------------- STUDENT ROUTES -------------------- */
+/* -------------------- STUDENT -------------------- */
 app.post(
-  "/applications",
+  "/api/applications",
   auth,
   isStudent,
   appCtrl.applyInternship
 );
 
 app.get(
-  "/applications/me",
+  "/api/applications/me",
   auth,
   isStudent,
   appCtrl.myApplications
 );
 
-/* -------------------- ADMIN ROUTES -------------------- */
+/* -------------------- ADMIN -------------------- */
 app.get(
-  "/applications",
+  "/api/applications",
   auth,
   isAdmin,
   appCtrl.getAllApplications
 );
 
 app.patch(
-  "/applications/:id",
+  "/api/applications/:id",
   auth,
   isAdmin,
   appCtrl.updateStatus
