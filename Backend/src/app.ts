@@ -14,14 +14,18 @@ const app = express();
 /* -------------------- GLOBAL MIDDLEWARES -------------------- */
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:8080"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:8080",
+      "https://internhub-personal.vercel.app"
+    ],
     credentials: true,
   })
 );
 app.use(express.json());
 
 /* -------------------- HEALTH CHECK -------------------- */
-app.get("/api/health", (_req, res) => {
+app.get("/health", (_req, res) => {
   res.status(200).json({
     status: "ok",
     message: "Backend is reachable 🚀",
@@ -29,59 +33,48 @@ app.get("/api/health", (_req, res) => {
 });
 
 /* -------------------- AUTH ROUTES -------------------- */
-app.post("/api/auth/register", authCtrl.register);
-app.post("/api/auth/login", authCtrl.login);
+app.post("/auth/register", authCtrl.register);
+app.post("/auth/login", authCtrl.login);
 
 /* -------------------- INTERNSHIP ROUTES -------------------- */
 app.post(
-  "/api/internships",
+  "/internships",
   auth,
   isAdmin,
   internshipCtrl.createInternship
 );
 
 app.get(
-  "/api/internships",
+  "/internships",
   auth,
   internshipCtrl.listInternships
 );
 
 /* -------------------- STUDENT ROUTES -------------------- */
 app.post(
-  "/api/applications",
+  "/applications",
   auth,
   isStudent,
   appCtrl.applyInternship
 );
 
 app.get(
-  "/api/applications/me",
+  "/applications/me",
   auth,
   isStudent,
   appCtrl.myApplications
 );
 
 /* -------------------- ADMIN ROUTES -------------------- */
-app.patch(
-  "/api/applications/:id",
-  auth,
-  isAdmin,
-  appCtrl.updateStatus
-);
-
-
-/* -------------------- ADMIN ROUTES -------------------- */
-
-// ✅ ADD THIS
 app.get(
-  "/api/applications",
+  "/applications",
   auth,
   isAdmin,
   appCtrl.getAllApplications
 );
 
 app.patch(
-  "/api/applications/:id",
+  "/applications/:id",
   auth,
   isAdmin,
   appCtrl.updateStatus
